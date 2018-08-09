@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.IUserDao">
+    <select id="findByid" parameterType="int" resultType="com.itheima.domain.User">
+            SELECT * FROM  USER WHERE id = #{id}
+    </select>
+    <!--
+    keyProperty 主键对应的User对象的属性
+    selectKey 表示在新增之后查询主键值
+    keyColumn 主键列名称
+    resultType 返回的主键的类型
+    order 表示在什么时候查询主键的值,默认是after
+    after 表示在插入之后查询主键的值(适用于主键自增长)
+    before 表示在插入之前先获取主键的值(使用于 Oracle数据库查询)
+    -->
+    <insert id="save" parameterType="com.itheima.domain.User">
+<selectKey keyProperty="id" keyColumn="id" resultType="int" order="AFTER">
+    SELECT LAST_INSERT_ID();
+</selectKey>
+        INSERT INTO USER (username,birthday,sex,address) VALUES
+        (#{username},#{birthday},#{sex},#{address})
+    </insert>
+    <update id="update" parameterType="com.itheima.domain.User">
+        UPDATE USER SET username = #{username},birthday=#{birthday},sex=#{sex},address=#{address}
+        WHERE id=#{id}
+    </update>
+    <delete id="delete" parameterType="int">
+        DELETE FROM USER WHERE ID=#{id}
+    </delete>
+    <select id="FindByUserNameLike" parameterType="String" resultType="com.itheima.domain.User">
+        SELECT * FROM USER WHERE username LIKE #{username1}
+    </select>
+    <select id="findByCondition" parameterType="com.itheima.domain.QueryVo" resultType="com.itheima.domain.User">
+        SELECT * FROM USER WHERE address=#{user.address} and birthday>=#{start} and birthday&lt;=#{end}
+    </select>
+    <select id="count" resultType="long">
+        SELECT COUNT(*) FROM USER
+    </select>
+</mapper>
